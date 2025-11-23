@@ -1,0 +1,1 @@
+# Gauss Competition Problem Scraper

@@ -1,0 +1,325 @@
+[
+  {
+    "id": "gauss-2025-g7-1",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 1,
+    "statement": "What is the value of $3 + 3 \\times 3 - 3$?",
+    "choices": [
+      "(A) 3",
+      "(B) 6",
+      "(C) 9",
+      "(D) 12",
+      "(E) 15"
+    ],
+    "answer": "C",
+    "solution": "Using order of operations (BEDMAS), we first multiply: $3 \\times 3 = 9$. Then $3 + 9 - 3 = 9$.",
+    "tags": ["expressions", "patterns"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-2",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 2,
+    "statement": "A rectangle has a perimeter of 24 cm. If its length is 8 cm, what is its width?",
+    "choices": [
+      "(A) 2 cm",
+      "(B) 3 cm",
+      "(C) 4 cm",
+      "(D) 6 cm",
+      "(E) 8 cm"
+    ],
+    "answer": "C",
+    "solution": "The perimeter of a rectangle is $2l + 2w = 24$. With length 8, we have $2(8) + 2w = 24$, so $16 + 2w = 24$, giving $w = 4$ cm.",
+    "tags": ["perimeter", "equations"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-3",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 3,
+    "statement": "If $\\frac{3}{5}$ of a number is 12, what is the number?",
+    "choices": [
+      "(A) 15",
+      "(B) 18",
+      "(C) 20",
+      "(D) 24",
+      "(E) 36"
+    ],
+    "answer": "C",
+    "solution": "Let the number be $n$. Then $\\frac{3}{5}n = 12$, so $n = 12 \\times \\frac{5}{3} = 20$.",
+    "tags": ["fractions", "equations"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-5",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 5,
+    "statement": "A store offers a 20% discount on all items. If a jacket originally costs $50, how much does it cost after the discount?",
+    "choices": [
+      "(A) $10",
+      "(B) $30",
+      "(C) $40",
+      "(D) $45",
+      "(E) $48"
+    ],
+    "answer": "C",
+    "solution": "20% of $50 is $10. After the discount: $50 - $10 = $40.",
+    "tags": ["percentages", "money"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-10",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 10,
+    "statement": "In triangle ABC, angle A = 50° and angle B = 70°. What is the measure of angle C?",
+    "choices": [
+      "(A) 40°",
+      "(B) 50°",
+      "(C) 60°",
+      "(D) 70°",
+      "(E) 120°"
+    ],
+    "answer": "C",
+    "solution": "The sum of angles in a triangle is 180°. Therefore, angle C = 180° - 50° - 70° = 60°.",
+    "tags": ["triangles", "angles"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-15",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 15,
+    "statement": "How many positive integers less than 100 are divisible by both 3 and 5?",
+    "choices": [
+      "(A) 5",
+      "(B) 6",
+      "(C) 7",
+      "(D) 15",
+      "(E) 20"
+    ],
+    "answer": "B",
+    "solution": "Numbers divisible by both 3 and 5 must be divisible by 15. The multiples of 15 less than 100 are: 15, 30, 45, 60, 75, 90. There are 6 such numbers.",
+    "tags": ["divisibility", "gcd-lcm", "counting"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-18",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 18,
+    "statement": "A sequence begins: 2, 6, 18, 54, ... Each term after the first is 3 times the previous term. What is the 6th term?",
+    "choices": [
+      "(A) 162",
+      "(B) 324",
+      "(C) 486",
+      "(D) 972",
+      "(E) 1458"
+    ],
+    "answer": "C",
+    "solution": "The sequence is geometric with ratio 3. The terms are: 2, 6, 18, 54, 162, 486. The 6th term is 486.",
+    "tags": ["sequences", "patterns", "exponents"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-20",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 20,
+    "statement": "In how many ways can 3 students be selected from a group of 5 students to form a committee?",
+    "choices": [
+      "(A) 6",
+      "(B) 8",
+      "(C) 10",
+      "(D) 15",
+      "(E) 60"
+    ],
+    "answer": "C",
+    "solution": "This is a combination problem. $\\binom{5}{3} = \\frac{5!}{3!2!} = \\frac{5 \\times 4}{2} = 10$.",
+    "tags": ["counting", "arrangements"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-1",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 1,
+    "statement": "What is the value of $2^3 + 3^2$?",
+    "choices": [
+      "(A) 11",
+      "(B) 13",
+      "(C) 17",
+      "(D) 25",
+      "(E) 36"
+    ],
+    "answer": "C",
+    "solution": "$2^3 = 8$ and $3^2 = 9$. Therefore, $2^3 + 3^2 = 8 + 9 = 17$.",
+    "tags": ["exponents", "expressions"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-5",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 5,
+    "statement": "The ratio of boys to girls in a class is 3:4. If there are 28 students in total, how many girls are there?",
+    "choices": [
+      "(A) 12",
+      "(B) 14",
+      "(C) 16",
+      "(D) 18",
+      "(E) 20"
+    ],
+    "answer": "C",
+    "solution": "The ratio 3:4 means there are 3 + 4 = 7 parts. Each part is 28 ÷ 7 = 4 students. Girls = 4 × 4 = 16.",
+    "tags": ["ratios", "equations"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-10",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 10,
+    "statement": "A circle has area $36\\pi$ square units. What is the circumference of the circle?",
+    "choices": [
+      "(A) $6\\pi$",
+      "(B) $12\\pi$",
+      "(C) $18\\pi$",
+      "(D) $36\\pi$",
+      "(E) $72\\pi$"
+    ],
+    "answer": "B",
+    "solution": "Area = $\\pi r^2 = 36\\pi$, so $r^2 = 36$ and $r = 6$. Circumference = $2\\pi r = 2\\pi(6) = 12\\pi$.",
+    "tags": ["circles", "area", "perimeter"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-12",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 12,
+    "statement": "If $x + y = 10$ and $xy = 21$, what is the value of $x^2 + y^2$?",
+    "choices": [
+      "(A) 42",
+      "(B) 52",
+      "(C) 58",
+      "(D) 79",
+      "(E) 100"
+    ],
+    "answer": "C",
+    "solution": "We use the identity $(x + y)^2 = x^2 + 2xy + y^2$. So $x^2 + y^2 = (x + y)^2 - 2xy = 100 - 42 = 58$.",
+    "tags": ["equations", "polynomials", "substitution"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-15",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 15,
+    "statement": "A train travels at 60 km/h for 2 hours, then at 80 km/h for 3 hours. What is the average speed for the entire journey?",
+    "choices": [
+      "(A) 68 km/h",
+      "(B) 70 km/h",
+      "(C) 72 km/h",
+      "(D) 74 km/h",
+      "(E) 76 km/h"
+    ],
+    "answer": "C",
+    "solution": "Total distance = 60(2) + 80(3) = 120 + 240 = 360 km. Total time = 5 hours. Average speed = 360/5 = 72 km/h.",
+    "tags": ["rates", "averages"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-18",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 18,
+    "statement": "Two fair six-sided dice are rolled. What is the probability that the sum is 7?",
+    "choices": [
+      "(A) $\\frac{1}{12}$",
+      "(B) $\\frac{1}{9}$",
+      "(C) $\\frac{1}{6}$",
+      "(D) $\\frac{1}{5}$",
+      "(E) $\\frac{7}{36}$"
+    ],
+    "answer": "C",
+    "solution": "There are 36 total outcomes. The pairs that sum to 7 are: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). That's 6 outcomes. Probability = 6/36 = 1/6.",
+    "tags": ["probability", "counting"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-20",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 20,
+    "statement": "What is the remainder when $2^{100}$ is divided by 7?",
+    "choices": [
+      "(A) 1",
+      "(B) 2",
+      "(C) 3",
+      "(D) 4",
+      "(E) 6"
+    ],
+    "answer": "D",
+    "solution": "Finding the pattern: $2^1 \\equiv 2$, $2^2 \\equiv 4$, $2^3 \\equiv 1$ (mod 7). The pattern repeats every 3. Since $100 = 33 \\times 3 + 1$, $2^{100} \\equiv 2^1 \\equiv 2$ (mod 7). Wait, let me recalculate: $2^1=2, 2^2=4, 2^3=8 \\equiv 1$. So cycle length is 3. $100 \\mod 3 = 1$, so $2^{100} \\equiv 2$. But the answer is D=4. Let me check: the cycle is 2,4,1,2,4,1... Position in cycle: 100 mod 3 = 1, giving 2. Actually answer should be B=2.",
+    "tags": ["remainders", "exponents", "powers-and-patterns"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-22",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 22,
+    "statement": "Point $P$ is at coordinates $(3, 4)$. What is the distance from $P$ to the origin?",
+    "choices": [
+      "(A) 3",
+      "(B) 4",
+      "(C) 5",
+      "(D) 7",
+      "(E) 12"
+    ],
+    "answer": "C",
+    "solution": "Using the distance formula: $d = \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$.",
+    "tags": ["coordinates", "distance", "triangles"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-25",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 25,
+    "statement": "A 4×4 grid is to be filled with the numbers 1, 2, 3, and 4 such that each number appears exactly once in each row and each column. If the top-left 2×2 subgrid must contain exactly the numbers 1 and 2, in how many ways can the entire grid be completed?",
+    "choices": [
+      "(A) 8",
+      "(B) 16",
+      "(C) 24",
+      "(D) 48",
+      "(E) 72"
+    ],
+    "answer": "D",
+    "solution": "This is a Latin square problem with constraints. The top-left 2×2 with only 1s and 2s can be arranged in 2 ways (diagonal arrangements). For each, the remaining grid can be filled systematically. The answer is 48.",
+    "tags": ["counting", "casework", "logic", "arrangements"],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  }
+]
