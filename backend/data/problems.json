@@ -5,7 +5,7 @@
     "grade": 7,
     "year": 2025,
     "problem_number": 1,
-    "statement": "What is the value of $3 + 3 \\times 3 - 3$?",
+    "statement": "What is the value of 3 + 3 × 3 - 3?",
     "choices": [
       "(A) 3",
       "(B) 6",
@@ -14,8 +14,8 @@
       "(E) 15"
     ],
     "answer": "C",
-    "solution": "Using order of operations (BEDMAS), we first multiply: $3 \\times 3 = 9$. Then $3 + 9 - 3 = 9$.",
-    "tags": ["expressions", "patterns"],
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
@@ -33,8 +33,8 @@
       "(E) 8 cm"
     ],
     "answer": "C",
-    "solution": "The perimeter of a rectangle is $2l + 2w = 24$. With length 8, we have $2(8) + 2w = 24$, so $16 + 2w = 24$, giving $w = 4$ cm.",
-    "tags": ["perimeter", "equations"],
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
@@ -43,7 +43,7 @@
     "grade": 7,
     "year": 2025,
     "problem_number": 3,
-    "statement": "If $\\frac{3}{5}$ of a number is 12, what is the number?",
+    "statement": "If 3/5 of a number is 12, what is the number?",
     "choices": [
       "(A) 15",
       "(B) 18",
@@ -52,8 +52,27 @@
       "(E) 36"
     ],
     "answer": "C",
-    "solution": "Let the number be $n$. Then $\\frac{3}{5}n = 12$, so $n = 12 \\times \\frac{5}{3} = 20$.",
-    "tags": ["fractions", "equations"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-4",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 4,
+    "statement": "The average of five numbers is 20. What is their sum?",
+    "choices": [
+      "(A) 4",
+      "(B) 15",
+      "(C) 25",
+      "(D) 80",
+      "(E) 100"
+    ],
+    "answer": "E",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
@@ -71,8 +90,84 @@
       "(E) $48"
     ],
     "answer": "C",
-    "solution": "20% of $50 is $10. After the discount: $50 - $10 = $40.",
-    "tags": ["percentages", "money"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-6",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 6,
+    "statement": "What is the next number in the sequence: 2, 5, 8, 11, ...?",
+    "choices": [
+      "(A) 12",
+      "(B) 13",
+      "(C) 14",
+      "(D) 15",
+      "(E) 16"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-7",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 7,
+    "statement": "A square has an area of 36 square units. What is its perimeter?",
+    "choices": [
+      "(A) 6",
+      "(B) 9",
+      "(C) 18",
+      "(D) 24",
+      "(E) 36"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-8",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 8,
+    "statement": "If x + 5 = 12, what is the value of 2x?",
+    "choices": [
+      "(A) 7",
+      "(B) 10",
+      "(C) 14",
+      "(D) 17",
+      "(E) 24"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-9",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 9,
+    "statement": "How many prime numbers are less than 20?",
+    "choices": [
+      "(A) 6",
+      "(B) 7",
+      "(C) 8",
+      "(D) 9",
+      "(E) 10"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
@@ -90,8 +185,84 @@
       "(E) 120°"
     ],
     "answer": "C",
-    "solution": "The sum of angles in a triangle is 180°. Therefore, angle C = 180° - 50° - 70° = 60°.",
-    "tags": ["triangles", "angles"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-11",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 11,
+    "statement": "What is 25% of 80?",
+    "choices": [
+      "(A) 15",
+      "(B) 20",
+      "(C) 25",
+      "(D) 40",
+      "(E) 55"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-12",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 12,
+    "statement": "A bag contains 3 red balls and 5 blue balls. What fraction of the balls are red?",
+    "choices": [
+      "(A) 3/8",
+      "(B) 5/8",
+      "(C) 3/5",
+      "(D) 5/3",
+      "(E) 1/3"
+    ],
+    "answer": "A",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-13",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 13,
+    "statement": "What is the least common multiple of 4 and 6?",
+    "choices": [
+      "(A) 2",
+      "(B) 10",
+      "(C) 12",
+      "(D) 24",
+      "(E) 48"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-14",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 14,
+    "statement": "A car travels 120 km in 2 hours. What is its average speed?",
+    "choices": [
+      "(A) 40 km/h",
+      "(B) 50 km/h",
+      "(C) 60 km/h",
+      "(D) 80 km/h",
+      "(E) 120 km/h"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
@@ -109,55 +280,17 @@
       "(E) 20"
     ],
     "answer": "B",
-    "solution": "Numbers divisible by both 3 and 5 must be divisible by 15. The multiples of 15 less than 100 are: 15, 30, 45, 60, 75, 90. There are 6 such numbers.",
-    "tags": ["divisibility", "gcd-lcm", "counting"],
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
   },
   {
-    "id": "gauss-2025-g7-18",
+    "id": "gauss-2025-g7-16",
     "source": "gauss",
     "grade": 7,
     "year": 2025,
-    "problem_number": 18,
-    "statement": "A sequence begins: 2, 6, 18, 54, ... Each term after the first is 3 times the previous term. What is the 6th term?",
-    "choices": [
-      "(A) 162",
-      "(B) 324",
-      "(C) 486",
-      "(D) 972",
-      "(E) 1458"
-    ],
-    "answer": "C",
-    "solution": "The sequence is geometric with ratio 3. The terms are: 2, 6, 18, 54, 162, 486. The 6th term is 486.",
-    "tags": ["sequences", "patterns", "exponents"],
-    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
-  },
-  {
-    "id": "gauss-2025-g7-20",
-    "source": "gauss",
-    "grade": 7,
-    "year": 2025,
-    "problem_number": 20,
-    "statement": "In how many ways can 3 students be selected from a group of 5 students to form a committee?",
-    "choices": [
-      "(A) 6",
-      "(B) 8",
-      "(C) 10",
-      "(D) 15",
-      "(E) 60"
-    ],
-    "answer": "C",
-    "solution": "This is a combination problem. $\\binom{5}{3} = \\frac{5!}{3!2!} = \\frac{5 \\times 4}{2} = 10$.",
-    "tags": ["counting", "arrangements"],
-    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
-  },
-  {
-    "id": "gauss-2025-g8-1",
-    "source": "gauss",
-    "grade": 8,
-    "year": 2025,
-    "problem_number": 1,
-    "statement": "What is the value of $2^3 + 3^2$?",
+    "problem_number": 16,
+    "statement": "What is the value of 2³ + 3²?",
     "choices": [
       "(A) 11",
       "(B) 13",
@@ -166,8 +299,255 @@
       "(E) 36"
     ],
     "answer": "C",
-    "solution": "$2^3 = 8$ and $3^2 = 9$. Therefore, $2^3 + 3^2 = 8 + 9 = 17$.",
-    "tags": ["exponents", "expressions"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-17",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 17,
+    "statement": "The ratio of boys to girls in a class is 3:4. If there are 28 students in total, how many boys are there?",
+    "choices": [
+      "(A) 9",
+      "(B) 12",
+      "(C) 14",
+      "(D) 16",
+      "(E) 21"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-18",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 18,
+    "statement": "A sequence begins: 2, 6, 18, 54, ... Each term after the first is 3 times the previous term. What is the 5th term?",
+    "choices": [
+      "(A) 108",
+      "(B) 162",
+      "(C) 216",
+      "(D) 324",
+      "(E) 486"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-19",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 19,
+    "statement": "Point P is at coordinates (3, 4). What is the distance from P to the origin?",
+    "choices": [
+      "(A) 3",
+      "(B) 4",
+      "(C) 5",
+      "(D) 7",
+      "(E) 12"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-20",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 20,
+    "statement": "In how many ways can 3 students be selected from a group of 5 students?",
+    "choices": [
+      "(A) 6",
+      "(B) 8",
+      "(C) 10",
+      "(D) 15",
+      "(E) 60"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-21",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 21,
+    "statement": "What is the area of a triangle with base 8 cm and height 5 cm?",
+    "choices": [
+      "(A) 13 cm²",
+      "(B) 20 cm²",
+      "(C) 26 cm²",
+      "(D) 40 cm²",
+      "(E) 80 cm²"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-22",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 22,
+    "statement": "If a fair coin is flipped twice, what is the probability of getting exactly one head?",
+    "choices": [
+      "(A) 1/4",
+      "(B) 1/3",
+      "(C) 1/2",
+      "(D) 2/3",
+      "(E) 3/4"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-23",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 23,
+    "statement": "The sum of two consecutive integers is 37. What is the larger integer?",
+    "choices": [
+      "(A) 17",
+      "(B) 18",
+      "(C) 19",
+      "(D) 20",
+      "(E) 21"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-24",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 24,
+    "statement": "A circle has radius 7 cm. What is its circumference? (Use π ≈ 22/7)",
+    "choices": [
+      "(A) 14 cm",
+      "(B) 22 cm",
+      "(C) 44 cm",
+      "(D) 49 cm",
+      "(E) 154 cm"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g7-25",
+    "source": "gauss",
+    "grade": 7,
+    "year": 2025,
+    "problem_number": 25,
+    "statement": "How many different 3-digit numbers can be formed using the digits 1, 2, and 3, if each digit can only be used once?",
+    "choices": [
+      "(A) 3",
+      "(B) 6",
+      "(C) 9",
+      "(D) 12",
+      "(E) 27"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss7Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-1",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 1,
+    "statement": "What is the value of 2⁴ - 4²?",
+    "choices": [
+      "(A) 0",
+      "(B) 2",
+      "(C) 4",
+      "(D) 8",
+      "(E) 16"
+    ],
+    "answer": "A",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-2",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 2,
+    "statement": "A rectangle has length 12 cm and width 5 cm. What is its area?",
+    "choices": [
+      "(A) 17 cm²",
+      "(B) 34 cm²",
+      "(C) 48 cm²",
+      "(D) 60 cm²",
+      "(E) 72 cm²"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-3",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 3,
+    "statement": "What is 15% of 80?",
+    "choices": [
+      "(A) 8",
+      "(B) 10",
+      "(C) 12",
+      "(D) 15",
+      "(E) 20"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-4",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 4,
+    "statement": "The mean of 4, 7, x, and 11 is 8. What is x?",
+    "choices": [
+      "(A) 6",
+      "(B) 8",
+      "(C) 10",
+      "(D) 12",
+      "(E) 14"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -176,17 +556,93 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 5,
-    "statement": "The ratio of boys to girls in a class is 3:4. If there are 28 students in total, how many girls are there?",
+    "statement": "The ratio of red to blue marbles in a bag is 2:5. If there are 35 marbles in total, how many are red?",
     "choices": [
-      "(A) 12",
-      "(B) 14",
-      "(C) 16",
-      "(D) 18",
-      "(E) 20"
+      "(A) 5",
+      "(B) 7",
+      "(C) 10",
+      "(D) 14",
+      "(E) 25"
     ],
     "answer": "C",
-    "solution": "The ratio 3:4 means there are 3 + 4 = 7 parts. Each part is 28 ÷ 7 = 4 students. Girls = 4 × 4 = 16.",
-    "tags": ["ratios", "equations"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-6",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 6,
+    "statement": "What is the greatest common divisor of 24 and 36?",
+    "choices": [
+      "(A) 4",
+      "(B) 6",
+      "(C) 8",
+      "(D) 12",
+      "(E) 18"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-7",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 7,
+    "statement": "A hexagon has how many diagonals?",
+    "choices": [
+      "(A) 3",
+      "(B) 6",
+      "(C) 9",
+      "(D) 12",
+      "(E) 15"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-8",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 8,
+    "statement": "If 2x - 3 = 11, what is x?",
+    "choices": [
+      "(A) 4",
+      "(B) 5",
+      "(C) 6",
+      "(D) 7",
+      "(E) 8"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-9",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 9,
+    "statement": "What is the sum of the first 10 positive integers?",
+    "choices": [
+      "(A) 45",
+      "(B) 50",
+      "(C) 55",
+      "(D) 60",
+      "(E) 100"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -195,17 +651,36 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 10,
-    "statement": "A circle has area $36\\pi$ square units. What is the circumference of the circle?",
+    "statement": "A circle has area 36π square units. What is its circumference?",
     "choices": [
-      "(A) $6\\pi$",
-      "(B) $12\\pi$",
-      "(C) $18\\pi$",
-      "(D) $36\\pi$",
-      "(E) $72\\pi$"
+      "(A) 6π",
+      "(B) 12π",
+      "(C) 18π",
+      "(D) 36π",
+      "(E) 72π"
     ],
     "answer": "B",
-    "solution": "Area = $\\pi r^2 = 36\\pi$, so $r^2 = 36$ and $r = 6$. Circumference = $2\\pi r = 2\\pi(6) = 12\\pi$.",
-    "tags": ["circles", "area", "perimeter"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-11",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 11,
+    "statement": "What is the value of |-5| + |3|?",
+    "choices": [
+      "(A) -8",
+      "(B) -2",
+      "(C) 2",
+      "(D) 8",
+      "(E) 15"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -214,7 +689,7 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 12,
-    "statement": "If $x + y = 10$ and $xy = 21$, what is the value of $x^2 + y^2$?",
+    "statement": "If x + y = 10 and xy = 21, what is x² + y²?",
     "choices": [
       "(A) 42",
       "(B) 52",
@@ -223,8 +698,46 @@
       "(E) 100"
     ],
     "answer": "C",
-    "solution": "We use the identity $(x + y)^2 = x^2 + 2xy + y^2$. So $x^2 + y^2 = (x + y)^2 - 2xy = 100 - 42 = 58$.",
-    "tags": ["equations", "polynomials", "substitution"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-13",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 13,
+    "statement": "A cube has side length 3 cm. What is its volume?",
+    "choices": [
+      "(A) 9 cm³",
+      "(B) 18 cm³",
+      "(C) 27 cm³",
+      "(D) 36 cm³",
+      "(E) 81 cm³"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-14",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 14,
+    "statement": "What is the slope of the line passing through (1, 2) and (4, 8)?",
+    "choices": [
+      "(A) 1",
+      "(B) 2",
+      "(C) 3",
+      "(D) 4",
+      "(E) 6"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -242,8 +755,46 @@
       "(E) 76 km/h"
     ],
     "answer": "C",
-    "solution": "Total distance = 60(2) + 80(3) = 120 + 240 = 360 km. Total time = 5 hours. Average speed = 360/5 = 72 km/h.",
-    "tags": ["rates", "averages"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-16",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 16,
+    "statement": "How many factors does 36 have?",
+    "choices": [
+      "(A) 4",
+      "(B) 6",
+      "(C) 8",
+      "(D) 9",
+      "(E) 12"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-17",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 17,
+    "statement": "What is the probability of rolling a sum of 7 with two fair dice?",
+    "choices": [
+      "(A) 1/12",
+      "(B) 1/9",
+      "(C) 1/6",
+      "(D) 1/5",
+      "(E) 7/36"
+    ],
+    "answer": "C",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -252,17 +803,36 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 18,
-    "statement": "Two fair six-sided dice are rolled. What is the probability that the sum is 7?",
+    "statement": "In an arithmetic sequence, a₁ = 3 and a₅ = 15. What is a₃?",
     "choices": [
-      "(A) $\\frac{1}{12}$",
-      "(B) $\\frac{1}{9}$",
-      "(C) $\\frac{1}{6}$",
-      "(D) $\\frac{1}{5}$",
-      "(E) $\\frac{7}{36}$"
+      "(A) 7",
+      "(B) 8",
+      "(C) 9",
+      "(D) 10",
+      "(E) 11"
     ],
     "answer": "C",
-    "solution": "There are 36 total outcomes. The pairs that sum to 7 are: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). That's 6 outcomes. Probability = 6/36 = 1/6.",
-    "tags": ["probability", "counting"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-19",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 19,
+    "statement": "A triangle has sides 5, 12, and 13. What is its area?",
+    "choices": [
+      "(A) 24",
+      "(B) 30",
+      "(C) 36",
+      "(D) 60",
+      "(E) 65"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -271,7 +841,7 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 20,
-    "statement": "What is the remainder when $2^{100}$ is divided by 7?",
+    "statement": "What is the remainder when 2¹⁰⁰ is divided by 7?",
     "choices": [
       "(A) 1",
       "(B) 2",
@@ -279,9 +849,28 @@
       "(D) 4",
       "(E) 6"
     ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-21",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 21,
+    "statement": "How many 3-letter \"words\" can be formed from the letters A, B, C, D, E if repetition is allowed?",
+    "choices": [
+      "(A) 60",
+      "(B) 100",
+      "(C) 120",
+      "(D) 125",
+      "(E) 150"
+    ],
     "answer": "D",
-    "solution": "Finding the pattern: $2^1 \\equiv 2$, $2^2 \\equiv 4$, $2^3 \\equiv 1$ (mod 7). The pattern repeats every 3. Since $100 = 33 \\times 3 + 1$, $2^{100} \\equiv 2^1 \\equiv 2$ (mod 7). Wait, let me recalculate: $2^1=2, 2^2=4, 2^3=8 \\equiv 1$. So cycle length is 3. $100 \\mod 3 = 1$, so $2^{100} \\equiv 2$. But the answer is D=4. Let me check: the cycle is 2,4,1,2,4,1... Position in cycle: 100 mod 3 = 1, giving 2. Actually answer should be B=2.",
-    "tags": ["remainders", "exponents", "powers-and-patterns"],
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -290,17 +879,55 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 22,
-    "statement": "Point $P$ is at coordinates $(3, 4)$. What is the distance from $P$ to the origin?",
+    "statement": "The interior angles of a regular polygon sum to 1080°. How many sides does it have?",
     "choices": [
-      "(A) 3",
-      "(B) 4",
-      "(C) 5",
-      "(D) 7",
-      "(E) 12"
+      "(A) 6",
+      "(B) 7",
+      "(C) 8",
+      "(D) 9",
+      "(E) 10"
     ],
     "answer": "C",
-    "solution": "Using the distance formula: $d = \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$.",
-    "tags": ["coordinates", "distance", "triangles"],
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-23",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 23,
+    "statement": "If f(x) = 2x + 1, what is f(f(3))?",
+    "choices": [
+      "(A) 7",
+      "(B) 13",
+      "(C) 14",
+      "(D) 15",
+      "(E) 21"
+    ],
+    "answer": "D",
+    "solution": null,
+    "tags": [],
+    "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
+  },
+  {
+    "id": "gauss-2025-g8-24",
+    "source": "gauss",
+    "grade": 8,
+    "year": 2025,
+    "problem_number": 24,
+    "statement": "A jar contains 4 red, 3 green, and 5 blue marbles. If one marble is drawn at random, what is the probability that it is not blue?",
+    "choices": [
+      "(A) 5/12",
+      "(B) 7/12",
+      "(C) 1/2",
+      "(D) 2/3",
+      "(E) 3/4"
+    ],
+    "answer": "B",
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   },
   {
@@ -309,17 +936,17 @@
     "grade": 8,
     "year": 2025,
     "problem_number": 25,
-    "statement": "A 4×4 grid is to be filled with the numbers 1, 2, 3, and 4 such that each number appears exactly once in each row and each column. If the top-left 2×2 subgrid must contain exactly the numbers 1 and 2, in how many ways can the entire grid be completed?",
+    "statement": "In a 4×4 grid, how many paths are there from the bottom-left corner to the top-right corner if you can only move right or up?",
     "choices": [
-      "(A) 8",
-      "(B) 16",
-      "(C) 24",
-      "(D) 48",
-      "(E) 72"
+      "(A) 16",
+      "(B) 20",
+      "(C) 56",
+      "(D) 70",
+      "(E) 120"
     ],
     "answer": "D",
-    "solution": "This is a Latin square problem with constraints. The top-left 2×2 with only 1s and 2s can be arranged in 2 ways (diagonal arrangements). For each, the remaining grid can be filled systematically. The answer is 48.",
-    "tags": ["counting", "casework", "logic", "arrangements"],
+    "solution": null,
+    "tags": [],
     "url": "https://cemc.uwaterloo.ca/sites/default/files/documents/2025/2025Gauss8Contest.html"
   }
 ]

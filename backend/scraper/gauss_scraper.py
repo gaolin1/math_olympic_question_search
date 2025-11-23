@@ -1,24 +1,25 @@
-"""Scraper for CEMC Gauss Competition problems from University of Waterloo."""
+"""Scraper for CEMC Gauss Competition problems from University of Waterloo.
+
+Usage:
+    # Try to download and cache HTML, then parse to problems.json
+    python -m scraper.gauss_scraper --year 2025 --cache ./cache --output ./data
+
+    # If download fails (site blocks your IP), manually save HTML files to cache dir:
+    # - 2025Gauss7Contest.html
+    # - 2025Gauss8Contest.html
+    # - 2025GaussSolution.html
+    # Then run again with same command - it will use cached files.
+"""
+import asyncio
 import json
 import re
-import time
 from pathlib import Path
 from typing import Optional
 
-import httpx
 from bs4 import BeautifulSoup, Tag
 
-from .models import Problem, ProblemSet
+from .models import Problem
 
-
-# Browser-like headers to avoid 403 errors
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.5",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-}
 
 # CEMC URL patterns
 CONTEST_URL = "https://cemc.uwaterloo.ca/sites/default/files/documents/{year}/{year}Gauss{grade}Contest.html"
@@ -26,43 +27,148 @@ SOLUTION_URL = "https://cemc.uwaterloo.ca/sites/default/files/documents/{year}/{
 
 
 class GaussScraper:
-    """Scraper for Gauss competition problems."""
+    """Scraper for Gauss competition problems with automatic HTML caching."""
 
-    def __init__(self, output_dir: Path = Path(".")):
-        self.output_dir = output_dir
-        self.client = httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0)
+    def __init__(self, cache_dir: Path, output_dir: Path = Path(".")):
+        self.cache_dir = Path(cache_dir)
+        self.output_dir = Path(output_dir)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def __enter__(self):
-        return self
+    def _get_cache_path(self, year: int, grade: int, is_solution: bool = False) -> Path:
+        """Get the cache file path for a contest or solution."""
+        if is_solution:
+            return self.cache_dir / f"{year}GaussSolution.html"
+        return self.cache_dir / f"{year}Gauss{grade}Contest.html"
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.client.close()
+    def _is_valid_html(self, html: str) -> bool:
+        """Check if HTML content is valid (not an error page)."""
+        if not html or len(html) < 500:
+            return False
+        if "Access denied" in html:
+            return False
+        return True
 
-    def fetch_page(self, url: str) -> Optional[str]:
-        """Fetch a page with retry logic."""
-        for attempt in range(3):
-            try:
-                response = self.client.get(url)
-                response.raise_for_status()
-                return response.text
-            except httpx.HTTPError as e:
-                print(f"Attempt {attempt + 1} failed for {url}: {e}")
-                if attempt < 2:
-                    time.sleep(2 ** attempt)
-        return None
+    async def _fetch_with_crawl4ai(self, url: str) -> Optional[str]:
+        """Fetch a URL using crawl4ai."""
+        try:
+            from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 
-    def parse_contest_page(self, html: str, year: int, grade: int) -> list[Problem]:
+            browser_config = BrowserConfig(
+                headless=True,
+                ignore_https_errors=True,
+                extra_args=["--disable-blink-features=AutomationControlled"],
+            )
+
+            async with AsyncWebCrawler(config=browser_config) as crawler:
+                result = await crawler.arun(
+                    url=url,
+                    config=CrawlerRunConfig(wait_until="networkidle"),
+                )
+                if result.success and self._is_valid_html(result.html):
+                    return result.html
+                return None
+        except ImportError:
+            print("crawl4ai not installed. Run: pip install crawl4ai")
+            return None
+        except Exception as e:
+            print(f"crawl4ai error: {e}")
+            return None
+
+    async def fetch_and_cache(self, year: int) -> dict[str, bool]:
+        """Fetch contest pages and cache them. Returns status for each file."""
+        status = {}
+
+        # Fetch Grade 7 and Grade 8 contests
+        for grade in [7, 8]:
+            cache_path = self._get_cache_path(year, grade)
+            key = f"grade_{grade}"
+
+            if cache_path.exists() and self._is_valid_html(cache_path.read_text()):
+                print(f"✓ Grade {grade} contest already cached: {cache_path}")
+                status[key] = True
+                continue
+
+            url = CONTEST_URL.format(year=year, grade=grade)
+            print(f"↓ Fetching Grade {grade} contest: {url}")
+
+            html = await self._fetch_with_crawl4ai(url)
+            if html:
+                cache_path.write_text(html, encoding="utf-8")
+                print(f"  ✓ Cached to {cache_path}")
+                status[key] = True
+            else:
+                print(f"  ✗ Failed to fetch (site may be blocking). Save HTML manually to: {cache_path}")
+                status[key] = False
+
+        # Fetch solutions
+        cache_path = self._get_cache_path(year, 0, is_solution=True)
+        if cache_path.exists() and self._is_valid_html(cache_path.read_text()):
+            print(f"✓ Solutions already cached: {cache_path}")
+            status["solutions"] = True
+        else:
+            url = SOLUTION_URL.format(year=year)
+            print(f"↓ Fetching solutions: {url}")
+
+            html = await self._fetch_with_crawl4ai(url)
+            if html:
+                cache_path.write_text(html, encoding="utf-8")
+                print(f"  ✓ Cached to {cache_path}")
+                status["solutions"] = True
+            else:
+                print(f"  ✗ Failed to fetch. Save HTML manually to: {cache_path}")
+                status["solutions"] = False
+
+        return status
+
+    def parse_from_cache(self, year: int) -> list[Problem]:
+        """Parse problems from cached HTML files."""
+        all_problems = []
+
+        for grade in [7, 8]:
+            cache_path = self._get_cache_path(year, grade)
+            if not cache_path.exists():
+                print(f"✗ Missing cache file: {cache_path}")
+                continue
+
+            html = cache_path.read_text(encoding="utf-8")
+            if not self._is_valid_html(html):
+                print(f"✗ Invalid HTML in cache: {cache_path}")
+                continue
+
+            print(f"◆ Parsing Grade {grade} contest from cache...")
+            problems = self._parse_contest_page(html, year, grade)
+            print(f"  Found {len(problems)} problems")
+            all_problems.extend(problems)
+
+        # Apply solutions
+        solution_path = self._get_cache_path(year, 0, is_solution=True)
+        if solution_path.exists():
+            html = solution_path.read_text(encoding="utf-8")
+            if self._is_valid_html(html):
+                print(f"◆ Parsing solutions from cache...")
+                solutions = self._parse_solution_page(html)
+                applied = 0
+                for problem in all_problems:
+                    key = (problem.grade, problem.problem_number)
+                    if key in solutions:
+                        answer, solution = solutions[key]
+                        if answer:
+                            problem.answer = answer
+                            applied += 1
+                        if solution:
+                            problem.solution = solution
+                print(f"  Applied {applied} answers")
+
+        return all_problems
+
+    def _parse_contest_page(self, html: str, year: int, grade: int) -> list[Problem]:
         """Parse a Gauss contest page and extract problems."""
         soup = BeautifulSoup(html, "lxml")
         problems = []
 
-        # Find all problem containers - CEMC uses various structures
-        # Try to find problems by looking for numbered patterns
         content = soup.find("body") or soup
-
-        # Extract text and find problem patterns
-        # Problems typically start with a number followed by a period
-        problem_sections = self._extract_problem_sections(content, year, grade)
+        problem_sections = self._extract_problem_sections(content)
 
         for prob_num, (statement, choices) in problem_sections.items():
             problem_id = Problem.create_id(year, grade, prob_num)
@@ -80,27 +186,23 @@ class GaussScraper:
             )
             problems.append(problem)
 
-        return problems
+        return sorted(problems, key=lambda p: p.problem_number)
 
-    def _extract_problem_sections(
-        self, content: Tag, year: int, grade: int
-    ) -> dict[int, tuple[str, list[str]]]:
+    def _extract_problem_sections(self, content: Tag) -> dict[int, tuple[str, list[str]]]:
         """Extract individual problems from the contest content."""
         problems = {}
-
-        # Get all text content
         text = content.get_text(separator="\n", strip=True)
 
-        # Split by problem numbers (1. through 25.)
-        # Pattern: start of line or after newline, number 1-25, followed by period
-        problem_pattern = re.compile(r"(?:^|\n)\s*(\d{1,2})\.\s*(.+?)(?=(?:\n\s*\d{1,2}\.\s)|\Z)", re.DOTALL)
+        # Pattern: number followed by period, then problem text
+        problem_pattern = re.compile(
+            r"(?:^|\n)\s*(\d{1,2})\.\s*(.+?)(?=(?:\n\s*\d{1,2}\.\s)|\Z)", re.DOTALL
+        )
 
         matches = problem_pattern.findall(text)
 
         for num_str, problem_text in matches:
             num = int(num_str)
             if 1 <= num <= 25:
-                # Extract choices (A) through (E)
                 statement, choices = self._extract_choices(problem_text)
                 problems[num] = (statement.strip(), choices)
 
@@ -111,13 +213,10 @@ class GaussScraper:
         choices = []
 
         # Pattern for choices: (A) ... (B) ... etc.
-        choice_pattern = re.compile(
-            r"\(([A-E])\)\s*(.+?)(?=\([A-E]\)|$)", re.DOTALL
-        )
+        choice_pattern = re.compile(r"\(([A-E])\)\s*(.+?)(?=\([A-E]\)|$)", re.DOTALL)
         matches = choice_pattern.findall(text)
 
         if matches:
-            # Find where choices start
             first_choice_match = re.search(r"\(A\)", text)
             if first_choice_match:
                 statement = text[: first_choice_match.start()].strip()
@@ -128,13 +227,13 @@ class GaussScraper:
         else:
             statement = text
 
-        # Ensure we have exactly 5 choices, pad if needed
+        # Pad to 5 choices if needed
         while len(choices) < 5:
             choices.append("")
 
         return statement, choices[:5]
 
-    def parse_solution_page(self, html: str) -> dict[tuple[int, int], tuple[str, str]]:
+    def _parse_solution_page(self, html: str) -> dict[tuple[int, int], tuple[str, str]]:
         """Parse solutions page and return mapping of (grade, problem_num) -> (answer, solution)."""
         soup = BeautifulSoup(html, "lxml")
         solutions = {}
@@ -142,147 +241,75 @@ class GaussScraper:
         content = soup.find("body") or soup
         text = content.get_text(separator="\n", strip=True)
 
-        # Solutions typically follow pattern: problem number, then answer, then explanation
-        # The solution page often has sections for Grade 7 and Grade 8
-
-        # Try to find answer key sections first
-        # Pattern: 1. A, 2. B, 3. C, etc. or in table format
-
-        # Look for answer patterns
+        # Look for answer patterns like "1. A" or "1. B"
         answer_pattern = re.compile(r"(\d{1,2})\.\s*([A-E])(?:\s|$|\n)")
         answer_matches = answer_pattern.findall(text)
 
-        current_grade = 7  # Default, will try to detect grade switches
+        current_grade = 7
 
         for num_str, answer in answer_matches:
             num = int(num_str)
             if 1 <= num <= 25:
-                # If we see problem 1 again, might be switching to grade 8
+                # If we see problem 1 again, switch to grade 8
                 if num == 1 and solutions.get((7, 1)):
                     current_grade = 8
                 solutions[(current_grade, num)] = (answer, "")
 
-        # Try to extract detailed solutions as well
-        solution_pattern = re.compile(
-            r"(?:Problem|Question)?\s*(\d{1,2})[.\s]*(.+?)(?=(?:Problem|Question)?\s*\d{1,2}[.\s]|\Z)",
-            re.DOTALL | re.IGNORECASE,
-        )
-
-        # This is a simplified extraction - real pages may need more specific parsing
-        for grade in [7, 8]:
-            for num in range(1, 26):
-                if (grade, num) not in solutions:
-                    solutions[(grade, num)] = ("", "")
-
         return solutions
 
-    def scrape_year(self, year: int) -> list[Problem]:
-        """Scrape all problems for a given year (both Grade 7 and Grade 8)."""
-        all_problems = []
-
-        for grade in [7, 8]:
-            url = CONTEST_URL.format(year=year, grade=grade)
-            print(f"Fetching Grade {grade} contest: {url}")
-
-            html = self.fetch_page(url)
-            if html:
-                problems = self.parse_contest_page(html, year, grade)
-                print(f"  Found {len(problems)} problems")
-                all_problems.extend(problems)
-            else:
-                print(f"  Failed to fetch Grade {grade} contest")
-
-            time.sleep(1)  # Be polite
-
-        # Fetch solutions
-        solution_url = SOLUTION_URL.format(year=year)
-        print(f"Fetching solutions: {solution_url}")
-
-        solution_html = self.fetch_page(solution_url)
-        if solution_html:
-            solutions = self.parse_solution_page(solution_html)
-
-            # Match solutions to problems
-            for problem in all_problems:
-                key = (problem.grade, problem.problem_number)
-                if key in solutions:
-                    answer, solution = solutions[key]
-                    problem.answer = answer if answer else None
-                    problem.solution = solution if solution else None
-
-            print(f"  Applied solutions to problems")
-        else:
-            print(f"  Failed to fetch solutions")
-
-        return all_problems
-
-    def save_problems(self, problems: list[Problem], filename: str = "problems.json"):
+    def save_problems(self, problems: list[Problem], filename: str = "problems.json") -> Path:
         """Save problems to JSON file."""
         output_path = self.output_dir / filename
-
-        # Convert to list of dicts
         problems_data = [p.model_dump() for p in problems]
 
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(problems_data, f, indent=2, ensure_ascii=False)
 
-        print(f"Saved {len(problems)} problems to {output_path}")
+        print(f"● Saved {len(problems)} problems to {output_path}")
         return output_path
 
+    async def run(self, year: int) -> list[Problem]:
+        """Full workflow: fetch/cache HTML, parse, return problems."""
+        print(f"\n{'='*60}")
+        print(f"Gauss {year} Scraper")
+        print(f"{'='*60}\n")
 
-    def load_from_local_files(
-        self, year: int, contest_dir: Path
-    ) -> list[Problem]:
-        """Load problems from locally saved HTML files.
+        # Step 1: Fetch and cache
+        print("Step 1: Fetch and cache HTML files\n")
+        await self.fetch_and_cache(year)
 
-        Expected files in contest_dir:
-        - {year}Gauss7Contest.html
-        - {year}Gauss8Contest.html
-        - {year}GaussSolution.html
-        """
-        all_problems = []
+        # Step 2: Parse from cache
+        print("\nStep 2: Parse problems from cache\n")
+        problems = self.parse_from_cache(year)
 
-        for grade in [7, 8]:
-            filename = f"{year}Gauss{grade}Contest.html"
-            filepath = contest_dir / filename
+        if not problems:
+            print("\n✗ No problems parsed. Please check:")
+            print(f"  1. Cache directory: {self.cache_dir}")
+            print(f"  2. Expected files:")
+            print(f"     - {year}Gauss7Contest.html")
+            print(f"     - {year}Gauss8Contest.html")
+            print(f"     - {year}GaussSolution.html")
+            print("\n  If the website blocked downloads, manually save the HTML files")
+            print("  from your browser to the cache directory and run again.")
 
-            if filepath.exists():
-                print(f"Loading Grade {grade} contest from: {filepath}")
-                html = filepath.read_text(encoding="utf-8")
-                problems = self.parse_contest_page(html, year, grade)
-                print(f"  Found {len(problems)} problems")
-                all_problems.extend(problems)
-            else:
-                print(f"  File not found: {filepath}")
-
-        # Load solutions
-        solution_filename = f"{year}GaussSolution.html"
-        solution_path = contest_dir / solution_filename
-
-        if solution_path.exists():
-            print(f"Loading solutions from: {solution_path}")
-            solution_html = solution_path.read_text(encoding="utf-8")
-            solutions = self.parse_solution_page(solution_html)
-
-            for problem in all_problems:
-                key = (problem.grade, problem.problem_number)
-                if key in solutions:
-                    answer, solution = solutions[key]
-                    problem.answer = answer if answer else None
-                    problem.solution = solution if solution else None
-
-            print(f"  Applied solutions to problems")
-        else:
-            print(f"  Solutions file not found: {solution_path}")
-
-        return all_problems
+        return problems
 
 
 def main():
     """Main entry point for scraping."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Scrape Gauss competition problems")
+    parser = argparse.ArgumentParser(
+        description="Scrape Gauss competition problems from CEMC",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Download and parse 2025 contests
+  python -m scraper.gauss_scraper --year 2025 --cache ./cache --output ./data
+
+  # If download fails, manually save HTML files to ./cache/ and run again
+        """,
+    )
     parser.add_argument(
         "--year",
         type=int,
@@ -290,30 +317,28 @@ def main():
         help="Year to scrape (default: 2025)",
     )
     parser.add_argument(
-        "--output",
+        "--cache",
         type=Path,
-        default=Path("."),
-        help="Output directory (default: current directory)",
+        default=Path("./cache"),
+        help="Directory to cache HTML files (default: ./cache)",
     )
     parser.add_argument(
-        "--local",
+        "--output",
         type=Path,
-        default=None,
-        help="Load from local HTML files in this directory instead of scraping",
+        default=Path("./data"),
+        help="Output directory for problems.json (default: ./data)",
     )
     args = parser.parse_args()
 
-    with GaussScraper(output_dir=args.output) as scraper:
-        if args.local:
-            problems = scraper.load_from_local_files(args.year, args.local)
-        else:
-            problems = scraper.scrape_year(args.year)
+    scraper = GaussScraper(cache_dir=args.cache, output_dir=args.output)
+    problems = asyncio.run(scraper.run(args.year))
 
-        if problems:
-            scraper.save_problems(problems)
-        else:
-            print("No problems found. If scraping failed, try using --local with saved HTML files.")
-            print("Note: CEMC website may block automated requests. Download HTML files manually and use --local.")
+    if problems:
+        scraper.save_problems(problems)
+        print(f"\n✓ Success! Scraped {len(problems)} problems.")
+    else:
+        print("\n✗ No problems scraped. See instructions above.")
+        exit(1)
 
 
 if __name__ == "__main__":
