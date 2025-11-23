@@ -295,6 +295,31 @@ class GaussScraper:
         return problems
 
 
+def print_urls(year: int, cache_dir: Path):
+    """Print URLs for manual download."""
+    cache_dir = Path(cache_dir)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"\n{'='*60}")
+    print(f"Gauss {year} - URLs for Manual Download")
+    print(f"{'='*60}\n")
+    print("Open each URL in your browser and save as HTML:\n")
+
+    files = [
+        (CONTEST_URL.format(year=year, grade=7), f"{year}Gauss7Contest.html"),
+        (CONTEST_URL.format(year=year, grade=8), f"{year}Gauss8Contest.html"),
+        (SOLUTION_URL.format(year=year), f"{year}GaussSolution.html"),
+    ]
+
+    for url, filename in files:
+        save_path = cache_dir / filename
+        print(f"  URL:  {url}")
+        print(f"  Save: {save_path}\n")
+
+    print(f"After saving all files, run:")
+    print(f"  python -m scraper.gauss_scraper --year {year} --cache {cache_dir}\n")
+
+
 def main():
     """Main entry point for scraping."""
     import argparse
@@ -304,10 +329,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Download and parse 2025 contests
-  python -m scraper.gauss_scraper --year 2025 --cache ./cache --output ./data
+  # Show URLs for manual download
+  python -m scraper.gauss_scraper --year 2025 --urls
 
-  # If download fails, manually save HTML files to ./cache/ and run again
+  # After saving HTML files, parse them
+  python -m scraper.gauss_scraper --year 2025 --cache ./cache --output ./data
         """,
     )
     parser.add_argument(
@@ -328,7 +354,17 @@ Examples:
         default=Path("./data"),
         help="Output directory for problems.json (default: ./data)",
     )
+    parser.add_argument(
+        "--urls",
+        action="store_true",
+        help="Just print URLs for manual download (no scraping)",
+    )
     args = parser.parse_args()
+
+    # If --urls flag, just print URLs and exit
+    if args.urls:
+        print_urls(args.year, args.cache)
+        return
 
     scraper = GaussScraper(cache_dir=args.cache, output_dir=args.output)
     problems = asyncio.run(scraper.run(args.year))
