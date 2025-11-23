@@ -13,24 +13,30 @@ from pydantic import BaseModel
 TAG_WHITELIST = {
     "Number Theory": [
         "divisibility", "primes", "factors", "gcd-lcm", "remainders",
-        "exponents", "powers-and-patterns", "digits", "parity"
+        "exponents", "powers-and-patterns", "digits", "parity", "modular-arithmetic"
     ],
     "Arithmetic & Algebra": [
         "fractions", "ratios", "percentages", "expressions", "equations",
-        "substitution", "patterns", "sequences", "inequalities", "polynomials"
+        "substitution", "patterns", "sequences", "inequalities", "polynomials",
+        "multiplication", "division", "linear-equations"
     ],
     "Geometry": [
         "triangles", "angles", "similarity", "circles", "coordinates",
-        "distance", "area", "perimeter", "3d-geometry", "transformations"
+        "distance", "area", "perimeter", "3d-geometry", "transformations",
+        "reflections"
     ],
     "Combinatorics & Probability": [
         "counting", "arrangements", "casework", "probability", "paths"
     ],
     "Word Problems & Applications": [
-        "rates", "averages", "money", "tables-and-graphs"
+        "rates", "averages", "money", "tables-and-graphs", "time", "calendar",
+        "bar-graphs"
     ],
     "Problem-Solving Strategies": [
         "logic", "working-backwards", "guess-check", "symmetry", "invariants", "extremal"
+    ],
+    "Statistics": [
+        "mean", "median", "mode", "statistics"
     ]
 }
 

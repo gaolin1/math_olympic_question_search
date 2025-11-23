@@ -8,3 +8,5 @@ crawl4ai>=0.7.0
 mineru>=2.6.4
 opencv-python>=4.10.0
 numpy>=1.24.0
+pytest>=8.3.0
+pytest-asyncio>=0.24.0

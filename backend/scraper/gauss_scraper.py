@@ -241,7 +241,12 @@ class GaussScraper:
     def _ensure_ocr(self):
         """Lazily initialize the Mineru OCR engine."""
         if self._ocr_engine is None:
-            from mineru.model.ocr.pytorch_paddle import PytorchPaddleOCR
+            try:
+                from mineru.model.ocr.pytorch_paddle import PytorchPaddleOCR  # type: ignore
+            except ImportError as exc:
+                raise RuntimeError(
+                    "Mineru OCR is required for image parsing. Install with pip install mineru"
+                ) from exc
 
             self._ocr_engine = PytorchPaddleOCR()
 
