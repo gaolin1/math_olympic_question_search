@@ -92,6 +92,12 @@ Ollama may only choose from these tags:
 **`GET /api/problems/{id}`**
 - Output: Single problem with full details including solution
 
+**`POST /api/hint`**
+- Input: `{ "problem_id": "gauss-2025-g8-15", "conversation": [...], "message": "How do I start?" }`
+- Process: Send problem context + conversation history to Ollama with hint-only system prompt
+- Output: `{ "response": "Consider what happens when..." }`
+- **Important:** System prompt instructs Ollama to provide hints and guide thinking, but NEVER reveal the answer directly
+
 ### Startup
 - Load `problems.json` into memory on startup
 
@@ -112,9 +118,16 @@ Ollama may only choose from these tags:
 
 3. **Results Section**
    - Display matching problems based on selected tags
-   - Show problem statement, choices, answer
-   - Expandable solution section
+   - **Only show problem statement and choices** (answer/solution hidden)
+   - Click on a problem to expand and open the hint chat
    - Filter/sort options
+
+4. **Inline Hint Chat** (opens when problem is clicked)
+   - Chat interface embedded below the selected problem
+   - User can ask for hints, clarification, or guidance
+   - Ollama responds with helpful hints but **never reveals the answer directly**
+   - Conversation history maintained per problem
+   - "Reveal Answer" button available after attempting (optional)
 
 ### Component Structure
 ```
@@ -122,7 +135,8 @@ App
 ├── LatexInput (text input + KaTeX preview)
 ├── TagSelector (tags with confidence progress bars)
 └── ProblemList
-    └── ProblemCard (statement, choices, expandable solution)
+    └── ProblemCard (statement, choices)
+        └── HintChat (inline chat with Ollama for hints)
 ```
 
 ## 7. Implementation Steps
@@ -141,15 +155,18 @@ App
 7. Set up FastAPI project structure
 8. Implement `/api/analyze` endpoint (Ollama integration)
 9. Implement `/api/problems` endpoint (tag filtering)
+10. Implement `/api/hint` endpoint (hint chat with answer-protection system prompt)
 
 ### Phase 4: Frontend
-10. Set up React + Vite project
-11. Build LaTeX input with KaTeX preview
-12. Build tag selector with confidence progress bars
-13. Build problem list and card components
-14. Connect to backend API
+11. Set up React + Vite project
+12. Build LaTeX input with KaTeX preview
+13. Build tag selector with confidence progress bars
+14. Build problem list and card components (question only, no answer)
+15. Build inline HintChat component with conversation history
+16. Connect to backend API
 
 ### Phase 5: Polish
-15. Add error handling and loading states
-16. Style the UI
-17. Test end-to-end flow
+17. Add error handling and loading states
+18. Style the UI (including chat interface)
+19. Test end-to-end flow
+20. Test hint system to ensure answers are not revealed
