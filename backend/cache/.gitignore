@@ -1,0 +1,6 @@
+# Ignore cached HTML files (downloaded from CEMC)
+# Users should download these files manually from their browser
+*.html
+
+# Keep this .gitignore
+!.gitignore
