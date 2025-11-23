@@ -13,12 +13,23 @@ Usage:
 import asyncio
 import json
 import re
+import base64
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
+import cv2
+import requests
 from bs4 import BeautifulSoup, Tag
 
-from .models import Problem
+# Support running as both module and script
+try:
+    from .models import Problem
+except ImportError:
+    import sys
+
+    sys.path.append(str(Path(__file__).resolve().parent))
+    from models import Problem
 
 
 # CEMC URL patterns
@@ -34,6 +45,7 @@ class GaussScraper:
         self.output_dir = Path(output_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self._ocr_engine = None
 
     def _get_cache_path(self, year: int, grade: int, is_solution: bool = False) -> Path:
         """Get the cache file path for a contest or solution."""
@@ -75,6 +87,26 @@ class GaussScraper:
             print(f"crawl4ai error: {e}")
             return None
 
+    def _fetch_with_requests(self, url: str) -> Optional[str]:
+        """Primary fetch using requests with a browsery User-Agent."""
+        try:
+            import requests
+
+            resp = requests.get(
+                url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+                },
+                timeout=20,
+            )
+            if resp.status_code == 200 and self._is_valid_html(resp.text):
+                return resp.text
+            print(f"requests fetch failed ({resp.status_code}) for {url}")
+            return None
+        except Exception as e:
+            print(f"requests fetch error for {url}: {e}")
+            return None
+
     async def fetch_and_cache(self, year: int) -> dict[str, bool]:
         """Fetch contest pages and cache them. Returns status for each file."""
         status = {}
@@ -92,7 +124,10 @@ class GaussScraper:
             url = CONTEST_URL.format(year=year, grade=grade)
             print(f"↓ Fetching Grade {grade} contest: {url}")
 
-            html = await self._fetch_with_crawl4ai(url)
+            # Try lightweight HTTP first; fall back to headless browser only if needed
+            html = self._fetch_with_requests(url)
+            if not html:
+                html = await self._fetch_with_crawl4ai(url)
             if html:
                 cache_path.write_text(html, encoding="utf-8")
                 print(f"  ✓ Cached to {cache_path}")
@@ -110,7 +145,9 @@ class GaussScraper:
             url = SOLUTION_URL.format(year=year)
             print(f"↓ Fetching solutions: {url}")
 
-            html = await self._fetch_with_crawl4ai(url)
+            html = self._fetch_with_requests(url)
+            if not html:
+                html = await self._fetch_with_crawl4ai(url)
             if html:
                 cache_path.write_text(html, encoding="utf-8")
                 print(f"  ✓ Cached to {cache_path}")
@@ -188,50 +225,123 @@ class GaussScraper:
 
         return sorted(problems, key=lambda p: p.problem_number)
 
+    def _clean_text(self, text: str) -> str:
+        """Normalize whitespace and fix common encoding artifacts."""
+        def _fix_encoding(s: str) -> str:
+            try:
+                return s.encode("latin1").decode("utf-8")
+            except Exception:
+                return s
+
+        text = _fix_encoding(text)
+        text = re.sub(r"Hide/Reveal Description.*", "", text, flags=re.IGNORECASE)
+        text = text.replace("â", " ")
+        return re.sub(r"\s+", " ", text).strip()
+
+    def _ensure_ocr(self):
+        """Lazily initialize the Mineru OCR engine."""
+        if self._ocr_engine is None:
+            from mineru.model.ocr.pytorch_paddle import PytorchPaddleOCR
+
+            self._ocr_engine = PytorchPaddleOCR()
+
+    def _ocr_image(self, img_tag: Tag) -> str:
+        """Run OCR on an <img> tag using Mineru; fall back to alt text if OCR fails."""
+        src = img_tag.get("src", "")
+        data: bytes | None = None
+
+        if src.startswith("data:image"):
+            try:
+                b64 = src.split(",", 1)[1]
+                data = base64.b64decode(b64)
+            except Exception:
+                data = None
+        elif src:
+            try:
+                resp = requests.get(src, timeout=15)
+                if resp.status_code == 200:
+                    data = resp.content
+            except Exception:
+                data = None
+
+        if not data:
+            return self._clean_text(img_tag.get("alt", ""))
+
+        arr = np.frombuffer(data, dtype=np.uint8)
+        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+        if img is None:
+            return self._clean_text(img_tag.get("alt", ""))
+
+        try:
+            self._ensure_ocr()
+            ocr_res = self._ocr_engine.ocr(img, det=True, rec=True)
+            texts = []
+            for page in ocr_res:
+                for entry in page:
+                    if len(entry) >= 2 and isinstance(entry[1], tuple):
+                        txt, conf = entry[1][0], entry[1][1]
+                        if txt:
+                            texts.append((conf, txt))
+            if texts:
+                best = max(texts, key=lambda t: t[0])[1]
+                return self._clean_text(best)
+        except Exception:
+            pass
+
+        return self._clean_text(img_tag.get("alt", ""))
+
     def _extract_problem_sections(self, content: Tag) -> dict[int, tuple[str, list[str]]]:
-        """Extract individual problems from the contest content."""
-        problems = {}
-        text = content.get_text(separator="\n", strip=True)
+        """Extract individual problems from the contest content.
 
-        # Pattern: number followed by period, then problem text
-        problem_pattern = re.compile(
-            r"(?:^|\n)\s*(\d{1,2})\.\s*(.+?)(?=(?:\n\s*\d{1,2}\.\s)|\Z)", re.DOTALL
-        )
+        The 2025 HTML uses numbered <ol type="1"> lists where each question is
+        represented by a top-level <li> that contains the statement and a
+        nested list of five answer options. We walk the top-level items only
+        (recursive=False) and pull choices from the nested <li> tags.
+        """
+        problems: dict[int, tuple[str, list[str]]] = {}
+        ol_lists = content.find_all("ol", attrs={"type": "1"})
+        problem_number = 1
 
-        matches = problem_pattern.findall(text)
+        # Drop hidden long descriptions that pollute statements/choices
+        for desc in content.find_all(id=re.compile(r"^longdesc", re.IGNORECASE)):
+            desc.decompose()
 
-        for num_str, problem_text in matches:
-            num = int(num_str)
-            if 1 <= num <= 25:
-                statement, choices = self._extract_choices(problem_text)
-                problems[num] = (statement.strip(), choices)
+        for ol in ol_lists:
+            items = ol.find_all("li", recursive=False)
+            for item in items:
+                # Prefer only the direct paragraph text for the statement to avoid pulling choices
+                direct_paras = item.find_all("p", recursive=False)
+                if direct_paras:
+                    statement_raw = " ".join(self._clean_text(p.get_text(" ", strip=True)) for p in direct_paras)
+                else:
+                    statement_raw = self._clean_text(item.get_text(" ", strip=True))
+
+                nested_ols = item.find_all("ol")
+                choice_tags = []
+                if nested_ols:
+                    # Prefer the last nested list (skips earlier descriptive lists)
+                    choice_tags = nested_ols[-1].find_all("li", recursive=False)
+                if not choice_tags:
+                    choice_tags = item.find_all("li")
+
+                choices = []
+                for li in choice_tags:
+                    txt = self._clean_text(li.get_text(" ", strip=True))
+                    if not txt:
+                        img = li.find("img")
+                        if img:
+                            txt = self._ocr_image(img)
+                    choices.append(txt)
+                choices = choices[:5]
+
+                # Ensure exactly 5 choices
+                while len(choices) < 5:
+                    choices.append("")
+
+                problems[problem_number] = (statement_raw, choices)
+                problem_number += 1
 
         return problems
-
-    def _extract_choices(self, text: str) -> tuple[str, list[str]]:
-        """Extract answer choices from problem text."""
-        choices = []
-
-        # Pattern for choices: (A) ... (B) ... etc.
-        choice_pattern = re.compile(r"\(([A-E])\)\s*(.+?)(?=\([A-E]\)|$)", re.DOTALL)
-        matches = choice_pattern.findall(text)
-
-        if matches:
-            first_choice_match = re.search(r"\(A\)", text)
-            if first_choice_match:
-                statement = text[: first_choice_match.start()].strip()
-                for letter, choice_text in matches:
-                    choices.append(f"({letter}) {choice_text.strip()}")
-            else:
-                statement = text
-        else:
-            statement = text
-
-        # Pad to 5 choices if needed
-        while len(choices) < 5:
-            choices.append("")
-
-        return statement, choices[:5]
 
     def _parse_solution_page(self, html: str) -> dict[tuple[int, int], tuple[str, str]]:
         """Parse solutions page and return mapping of (grade, problem_num) -> (answer, solution)."""
