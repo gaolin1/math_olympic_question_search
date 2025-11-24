@@ -13,6 +13,7 @@ export interface Problem {
   choices: string[];
   tags: string[];
   url: string;
+  images: string[];  // Base64 data URIs for problem images
 }
 
 export interface ProblemDetail extends Problem {

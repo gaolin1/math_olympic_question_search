@@ -43,7 +43,7 @@ export function ProblemCard({ problem }: ProblemCardProps) {
             <span className="problem-badge">#{problem.problem_number}</span>
           </div>
           <div className="problem-statement" style={{ marginTop: '0.5rem' }}>
-            <LatexRenderer latex={problem.statement} />
+            <LatexRenderer latex={problem.statement} images={problem.images} />
           </div>
         </div>
         <span className="problem-expand-icon">{isExpanded ? '−' : '+'}</span>

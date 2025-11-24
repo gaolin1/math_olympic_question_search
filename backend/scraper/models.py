@@ -16,6 +16,7 @@ class Problem(BaseModel):
     solution: Optional[str] = None  # Solution explanation
     tags: list[str] = []  # Concept tags
     url: str  # Source URL
+    images: list[str] = []  # Images as base64 data URIs
 
     @classmethod
     def create_id(cls, year: int, grade: int, problem_number: int) -> str:

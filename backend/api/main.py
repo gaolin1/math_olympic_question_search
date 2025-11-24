@@ -171,6 +171,7 @@ class ProblemResponse(BaseModel):
     choices: list[str]
     tags: list[str]
     url: str
+    images: list[str] = []  # Base64 data URIs for problem images
     # answer and solution are excluded from list view
 
 

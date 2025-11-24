@@ -205,11 +205,11 @@ class GaussScraper:
         problems = []
 
         content = soup.find("body") or soup
-        problem_sections = self._extract_problem_sections(content)
+        base_url = CONTEST_URL.format(year=year, grade=grade)
+        problem_sections = self._extract_problem_sections(content, base_url)
 
-        for prob_num, (statement, choices) in problem_sections.items():
+        for prob_num, (statement, choices, images) in problem_sections.items():
             problem_id = Problem.create_id(year, grade, prob_num)
-            url = CONTEST_URL.format(year=year, grade=grade)
 
             problem = Problem(
                 id=problem_id,
@@ -219,7 +219,8 @@ class GaussScraper:
                 problem_number=prob_num,
                 statement=statement,
                 choices=choices,
-                url=url,
+                images=images,
+                url=base_url,
             )
             problems.append(problem)
 
@@ -249,6 +250,58 @@ class GaussScraper:
                 ) from exc
 
             self._ocr_engine = PytorchPaddleOCR()
+
+    def _extract_image_as_base64(self, img_tag: Tag, base_url: str = "") -> Optional[str]:
+        """Extract an image from an <img> tag and return as base64 data URI.
+
+        Args:
+            img_tag: BeautifulSoup img tag
+            base_url: Base URL for resolving relative image paths
+
+        Returns:
+            Base64 data URI string (e.g., "data:image/png;base64,...") or None if extraction fails
+        """
+        src = img_tag.get("src", "")
+
+        # Already a data URI - return as-is
+        if src.startswith("data:image"):
+            return src
+
+        # No source
+        if not src:
+            return None
+
+        # Resolve relative URLs
+        if not src.startswith(("http://", "https://")):
+            if base_url:
+                from urllib.parse import urljoin
+                src = urljoin(base_url, src)
+            else:
+                return None
+
+        # Fetch the image
+        try:
+            resp = requests.get(
+                src,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                },
+                timeout=15
+            )
+            if resp.status_code != 200:
+                return None
+
+            # Determine content type
+            content_type = resp.headers.get("Content-Type", "image/png")
+            if ";" in content_type:
+                content_type = content_type.split(";")[0].strip()
+
+            # Encode as base64
+            b64_data = base64.b64encode(resp.content).decode("utf-8")
+            return f"data:{content_type};base64,{b64_data}"
+        except Exception as e:
+            print(f"  Warning: Failed to fetch image {src}: {e}")
+            return None
 
     def _ocr_image(self, img_tag: Tag) -> str:
         """Run OCR on an <img> tag using Mineru; fall back to alt text if OCR fails."""
@@ -295,15 +348,22 @@ class GaussScraper:
 
         return self._clean_text(img_tag.get("alt", ""))
 
-    def _extract_problem_sections(self, content: Tag) -> dict[int, tuple[str, list[str]]]:
+    def _extract_problem_sections(self, content: Tag, base_url: str = "") -> dict[int, tuple[str, list[str], list[str]]]:
         """Extract individual problems from the contest content.
 
         The 2025 HTML uses numbered <ol type="1"> lists where each question is
         represented by a top-level <li> that contains the statement and a
         nested list of five answer options. We walk the top-level items only
         (recursive=False) and pull choices from the nested <li> tags.
+
+        Returns:
+            Dict mapping problem_number to (statement, choices, images) tuple.
+            Images are base64 data URIs. The statement contains {{IMG:n}} placeholders
+            at the original image positions, where n is the index into the images list.
         """
-        problems: dict[int, tuple[str, list[str]]] = {}
+        from copy import copy
+
+        problems: dict[int, tuple[str, list[str], list[str]]] = {}
         ol_lists = content.find_all("ol", attrs={"type": "1"})
         problem_number = 1
 
@@ -314,14 +374,43 @@ class GaussScraper:
         for ol in ol_lists:
             items = ol.find_all("li", recursive=False)
             for item in items:
-                # Prefer only the direct paragraph text for the statement to avoid pulling choices
+                # Collect images and replace with placeholders to preserve positions
+                images: list[str] = []
+
+                # Find images in statement paragraphs (not in nested choice lists)
+                nested_ols = item.find_all("ol")
+                choice_ol = nested_ols[-1] if nested_ols else None
+
+                # Process images in the statement area (direct paragraphs)
                 direct_paras = item.find_all("p", recursive=False)
                 if direct_paras:
+                    for para in direct_paras:
+                        for img_tag in para.find_all("img"):
+                            img_data = self._extract_image_as_base64(img_tag, base_url)
+                            if img_data:
+                                placeholder = f"{{{{IMG:{len(images)}}}}}"
+                                images.append(img_data)
+                                img_tag.replace_with(placeholder)
+                            else:
+                                # Remove images we couldn't extract
+                                img_tag.decompose()
                     statement_raw = " ".join(self._clean_text(p.get_text(" ", strip=True)) for p in direct_paras)
                 else:
+                    # No direct paragraphs - process images at item level (excluding choice list)
+                    # Make a copy to avoid modifying during iteration
+                    for img_tag in list(item.find_all("img")):
+                        # Skip images inside the choices list
+                        if choice_ol and img_tag.find_parent("ol") == choice_ol:
+                            continue
+                        img_data = self._extract_image_as_base64(img_tag, base_url)
+                        if img_data:
+                            placeholder = f"{{{{IMG:{len(images)}}}}}"
+                            images.append(img_data)
+                            img_tag.replace_with(placeholder)
+                        else:
+                            img_tag.decompose()
                     statement_raw = self._clean_text(item.get_text(" ", strip=True))
 
-                nested_ols = item.find_all("ol")
                 choice_tags = []
                 if nested_ols:
                     # Prefer the last nested list (skips earlier descriptive lists)
@@ -343,7 +432,7 @@ class GaussScraper:
                 while len(choices) < 5:
                     choices.append("")
 
-                problems[problem_number] = (statement_raw, choices)
+                problems[problem_number] = (statement_raw, choices, images)
                 problem_number += 1
 
         return problems
