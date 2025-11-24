@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import katex from 'katex';
+import { LatexRenderer } from './LatexRenderer';
 
 interface LatexInputProps {
   onAnalyze: (latex: string) => void;
@@ -8,18 +8,13 @@ interface LatexInputProps {
 
 export function LatexInput({ onAnalyze, isLoading }: LatexInputProps) {
   const [latex, setLatex] = useState('');
-  const previewRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (previewRef.current && latex) {
-      try {
-        katex.render(latex, previewRef.current, {
-          throwOnError: false,
-          displayMode: true,
-        });
-      } catch {
-        previewRef.current.textContent = latex;
-      }
+    if (textareaRef.current) {
+      const el = textareaRef.current;
+      el.style.height = 'auto';
+      el.style.height = `${el.scrollHeight}px`;
     }
   }, [latex]);
 
@@ -30,26 +25,47 @@ export function LatexInput({ onAnalyze, isLoading }: LatexInputProps) {
     }
   };
 
+  const handleInsertMath = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? latex.length;
+    const end = el.selectionEnd ?? start;
+    const insert = '\\(  \\)';
+    const nextVal = latex.slice(0, start) + insert + latex.slice(end);
+    setLatex(nextVal);
+    requestAnimationFrame(() => {
+      const pos = start + 3;
+      el.focus();
+      el.setSelectionRange(pos, pos);
+    });
+  };
+
   return (
     <section className="latex-input-section">
       <h2>Enter a Math Expression</h2>
       <form onSubmit={handleSubmit}>
         <div className="latex-input-container">
-          <input
-            type="text"
+          <textarea
             value={latex}
             onChange={(e) => setLatex(e.target.value)}
             placeholder="e.g., x^2 + 5x + 6 = 0"
             disabled={isLoading}
+            rows={3}
+            ref={textareaRef}
           />
-          <button type="submit" disabled={isLoading || !latex.trim()}>
-            {isLoading ? 'Analyzing...' : 'Analyze'}
-          </button>
+          <div className="math-actions">
+            <button type="button" className="secondary-btn" onClick={handleInsertMath}>
+              Add Math
+            </button>
+            <button type="submit" disabled={isLoading || !latex.trim()}>
+              {isLoading ? 'Analyzing...' : 'Analyze'}
+            </button>
+          </div>
         </div>
       </form>
       <div className="latex-preview">
         {latex ? (
-          <div ref={previewRef} />
+          <LatexRenderer latex={latex} className="problem-statement" />
         ) : (
           <span className="placeholder">Preview will appear here...</span>
         )}

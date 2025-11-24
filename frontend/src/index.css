@@ -23,30 +23,67 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: var(--gray-50);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: radial-gradient(circle at 20% 20%, #eef2ff, #f8fafc 35%), radial-gradient(circle at 80% 0%, #ecfeff, #f8fafc 30%), var(--gray-50);
   color: var(--gray-900);
   line-height: 1.6;
 }
 
 .app {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 2.5rem 3rem;
 }
 
 .header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .header h1 {
-  font-size: 2rem;
+  font-size: 2.25rem;
   color: var(--gray-900);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
 }
 
 .header p {
   color: var(--gray-600);
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .latex-input-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .latex-input-container button {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.right-panel {
+  min-width: 0;
 }
 
 /* LaTeX Input Section */
@@ -54,8 +91,9 @@ body {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--gray-100);
+  width: 100%;
 }
 
 .latex-input-section h2 {
@@ -66,17 +104,35 @@ body {
 
 .latex-input-container {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+  align-items: stretch;
+  position: relative;
 }
 
 .latex-input-container input {
-  flex: 1;
-  padding: 0.75rem 1rem;
+  flex: 1 1 auto;
+  padding: 1rem 1.25rem;
   border: 1px solid var(--gray-300);
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 12px;
+  font-size: 1.05rem;
   font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  min-width: 0;
+}
+
+.latex-input-container textarea {
+  flex: 1 1 auto;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-width: 0;
+  resize: none;
+  line-height: 1.4;
+  min-height: 80px;
+  overflow: hidden !important;
 }
 
 .latex-input-container input:focus {
@@ -85,8 +141,23 @@ body {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+.latex-input-container textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
 .latex-input-container button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.95rem 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  height: 52px;
+  align-self: stretch;
+  margin-top: 0;
+  white-space: nowrap;
+  flex: 0 0 auto;
   background: var(--primary);
   color: white;
   border: none;
@@ -105,13 +176,55 @@ body {
   cursor: not-allowed;
 }
 
+.math-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.math-actions button {
+  flex: 1 1 0;
+}
+
+.math-actions .secondary-btn {
+  background: var(--gray-200);
+  color: var(--gray-800);
+}
+
 .latex-preview {
   padding: 1rem;
   background: var(--gray-50);
   border-radius: 8px;
   min-height: 3rem;
-  display: flex;
-  align-items: center;
+  display: block;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  white-space: normal;
+  word-break: normal;
+  overflow: hidden;
+}
+
+/* Allow text wrapping but preserve KaTeX's inline display */
+.latex-preview {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.latex-preview .katex {
+  white-space: nowrap;
+  display: inline;
+}
+
+.latex-preview .problem-statement {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--gray-900);
+}
+
+.latex-preview .katex-display {
+  margin: 0;
+  width: 100%;
 }
 
 .latex-preview .placeholder {
@@ -124,8 +237,8 @@ body {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--gray-100);
 }
 
 .tag-selector-section h2 {
@@ -145,9 +258,16 @@ body {
 }
 
 .tag-suggestions {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 0.5rem;
+}
+
+.suggested-tags summary {
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
 }
 
 .tag-suggestion {
@@ -157,11 +277,12 @@ body {
   padding: 0.5rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .tag-suggestion:hover {
   background: var(--gray-50);
+  transform: translateY(-1px);
 }
 
 .tag-suggestion input {
@@ -227,6 +348,80 @@ body {
 .no-tags {
   color: var(--gray-400);
   font-style: italic;
+}
+
+.available-tags {
+  margin-bottom: 1rem;
+}
+
+.available-tags h3 {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+}
+
+.tag-search {
+  position: relative;
+}
+
+.tag-search input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.tag-search input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.tag-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+  z-index: 10;
+  max-height: 240px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.tag-pill {
+  border: 1px solid var(--gray-200);
+  border-radius: 9999px;
+  padding: 0.35rem 0.75rem;
+  background: var(--gray-50);
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.tag-pill:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.tag-pill .tag-count {
+  opacity: 0.7;
+  font-size: 0.8em;
+}
+
+.tag-pill:hover .tag-count {
+  opacity: 0.9;
 }
 
 /* Problem List Section */

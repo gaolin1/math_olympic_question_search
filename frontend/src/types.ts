@@ -36,4 +36,5 @@ export interface HintResponse {
 export interface TagsResponse {
   tags: Record<string, string[]>;
   all_tags: string[];
+  tag_counts: Record<string, number>;
 }

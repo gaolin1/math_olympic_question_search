@@ -1,5 +1,6 @@
 """FastAPI backend for Math Olympic Question Search."""
 import json
+import re
 from pathlib import Path
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -42,6 +43,90 @@ TAG_WHITELIST = {
 
 # Flatten all tags for validation
 ALL_TAGS = [tag for tags in TAG_WHITELIST.values() for tag in tags]
+
+def _normalize_tag(tag: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", tag.lower()).strip("-")
+
+NORMALIZED_TAGS = {_normalize_tag(tag): tag for tag in ALL_TAGS}
+TAG_ALIASES = {
+    "bar-graph": "bar-graphs",
+    "bar-chart": "bar-graphs",
+    "graph": "bar-graphs",
+    "translate": "coordinates",
+    "translation": "coordinates",
+    "reflections": "reflections",
+    "reflect": "reflections",
+    "day-of-week": "calendar",
+    "calendar-problem": "calendar",
+    "die": "probability",
+    "dice": "probability",
+    "ratio": "ratios",
+    "ratios": "ratios",
+    "multiplying": "multiplication",
+    "divide": "division",
+}
+
+def _resolve_tag(tag: str) -> str | None:
+    norm = _normalize_tag(tag)
+    if norm in TAG_ALIASES:
+        norm = _normalize_tag(TAG_ALIASES[norm])
+    if norm in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm]
+    if norm.endswith("s") and norm[:-1] in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm[:-1]]
+    if norm + "s" in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm + "s"]
+    return None
+
+def _extract_tags_from_text(text: str) -> list[str]:
+    normalized_text = _normalize_tag(text)
+    found: list[str] = []
+    for norm_tag, canonical in NORMALIZED_TAGS.items():
+        if norm_tag and norm_tag in normalized_text and canonical not in found:
+            found.append(canonical)
+    return found
+
+def _normalize_tag(tag: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", tag.lower()).strip("-")
+
+NORMALIZED_TAGS = {_normalize_tag(tag): tag for tag in ALL_TAGS}
+TAG_ALIASES = {
+    "bar-graph": "bar-graphs",
+    "bar-chart": "bar-graphs",
+    "graph": "bar-graphs",
+    "translate": "coordinates",
+    "translation": "coordinates",
+    "reflections": "reflections",
+    "reflect": "reflections",
+    "day-of-week": "calendar",
+    "calendar-problem": "calendar",
+    "die": "probability",
+    "dice": "probability",
+    "ratio": "ratios",
+    "ratios": "ratios",
+    "multiplying": "multiplication",
+    "divide": "division",
+}
+
+def _resolve_tag(tag: str) -> str | None:
+    norm = _normalize_tag(tag)
+    if norm in TAG_ALIASES:
+        norm = _normalize_tag(TAG_ALIASES[norm])
+    if norm in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm]
+    if norm.endswith("s") and norm[:-1] in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm[:-1]]
+    if norm + "s" in NORMALIZED_TAGS:
+        return NORMALIZED_TAGS[norm + "s"]
+    return None
+
+def _extract_tags_from_text(text: str) -> list[str]:
+    normalized_text = _normalize_tag(text)
+    found: list[str] = []
+    for norm_tag, canonical in NORMALIZED_TAGS.items():
+        if norm_tag and norm_tag in normalized_text and canonical not in found:
+            found.append(canonical)
+    return found
 
 # Configuration
 OLLAMA_URL = "http://localhost:11434/api/generate"
@@ -118,7 +203,7 @@ app = FastAPI(
 # CORS middleware for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -127,8 +212,14 @@ app.add_middleware(
 
 @app.get("/api/tags")
 async def get_tags() -> dict:
-    """Get all available tags organized by category."""
-    return {"tags": TAG_WHITELIST, "all_tags": ALL_TAGS}
+    """Get all available tags organized by category with problem counts."""
+    # Count problems per tag
+    tag_counts: dict[str, int] = {}
+    for problem in problems_db:
+        for tag in problem.get("tags", []):
+            tag_counts[tag] = tag_counts.get(tag, 0) + 1
+
+    return {"tags": TAG_WHITELIST, "all_tags": ALL_TAGS, "tag_counts": tag_counts}
 
 
 @app.post("/api/analyze", response_model=AnalyzeResponse)
@@ -177,6 +268,7 @@ Return JSON with tags and confidence scores."""
 
             result = response.json()
             response_text = result.get("response", "").strip()
+            reasoning_text = result.get("thinking", "")
 
             # Parse JSON from response
             if "```json" in response_text:
@@ -192,17 +284,39 @@ Return JSON with tags and confidence scores."""
                 tags_data = data.get("tags", [])
 
                 # Validate and convert tags
-                tags = []
+                tags: list[TagWithConfidence] = []
                 for t in tags_data:
-                    if isinstance(t, dict) and t.get("name") in ALL_TAGS:
-                        tags.append(TagWithConfidence(
-                            name=t["name"],
-                            confidence=min(1.0, max(0.0, float(t.get("confidence", 0.5))))
-                        ))
+                    name = None
+                    conf = 0.5
+                    if isinstance(t, dict):
+                        name = t.get("name")
+                        if "confidence" in t:
+                            try:
+                                conf = float(t.get("confidence", 0.5))
+                            except Exception:
+                                conf = 0.5
+                    elif isinstance(t, str):
+                        name = t
+                    resolved = _resolve_tag(name) if name else None
+                    if resolved:
+                        tags.append(
+                            TagWithConfidence(
+                                name=resolved,
+                                confidence=min(1.0, max(0.0, conf))
+                            )
+                        )
 
                 # Sort by confidence
                 tags.sort(key=lambda x: x.confidence, reverse=True)
-                return AnalyzeResponse(tags=tags)
+                if tags:
+                    return AnalyzeResponse(tags=tags)
+
+            # Fallback: scan response/reasoning/prompt text for tag keywords
+            fallback_tags = _extract_tags_from_text(response_text or reasoning_text or request.latex)
+            if fallback_tags:
+                return AnalyzeResponse(
+                    tags=[TagWithConfidence(name=t, confidence=0.4) for t in fallback_tags]
+                )
 
             return AnalyzeResponse(tags=[])
 
@@ -227,13 +341,13 @@ async def get_problems(
     """Get problems, optionally filtered by tags (intersection)."""
     result = problems_db
 
-    # Filter by tags (intersection - must have ALL selected tags)
+    # Filter by tags (union - must have ANY selected tag)
     if tags:
         tag_list = [t.strip() for t in tags.split(",") if t.strip()]
         if tag_list:
             result = [
                 p for p in result
-                if all(tag in p.get("tags", []) for tag in tag_list)
+                if any(tag in p.get("tags", []) for tag in tag_list)
             ]
 
     # Filter by grade

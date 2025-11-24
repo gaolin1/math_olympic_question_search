@@ -36,10 +36,10 @@ export function ProblemList({ selectedTags }: ProblemListProps) {
   const filterProblems = useCallback(() => {
     let result = problems;
 
-    // Filter by tags (intersection - must have ALL selected tags)
+    // Filter by tags (union - must have ANY selected tag)
     if (selectedTags.length > 0) {
       result = result.filter((p) =>
-        selectedTags.every((tag) => p.tags.includes(tag))
+        selectedTags.some((tag) => p.tags.includes(tag))
       );
     }
 
