@@ -7,19 +7,60 @@ console.log('=== LatexRenderer.tsx LOADED ===');
 interface LatexRendererProps {
   latex: string;
   className?: string;
+  images?: string[];  // Base64 data URIs for {{IMG:n}} placeholders
 }
 
-// Helper function to append text with line breaks preserved
-function appendTextWithLineBreaks(container: HTMLElement, text: string) {
-  text.split(/\r?\n/).forEach((line, idx, arr) => {
-    container.appendChild(document.createTextNode(line));
-    if (idx < arr.length - 1) {
+// Helper function to append text with line breaks and image placeholders preserved
+function appendTextWithLineBreaks(container: HTMLElement, text: string, images?: string[]) {
+  // Pattern to match {{IMG:n}} placeholders
+  const imgPattern = /\{\{IMG:(\d+)\}\}/g;
+
+  text.split(/\r?\n/).forEach((line, lineIdx, arr) => {
+    // Process image placeholders within the line
+    let lastIdx = 0;
+    let match;
+
+    while ((match = imgPattern.exec(line)) !== null) {
+      // Add text before the placeholder
+      if (match.index > lastIdx) {
+        container.appendChild(document.createTextNode(line.slice(lastIdx, match.index)));
+      }
+
+      // Add the image
+      const imgIndex = parseInt(match[1], 10);
+      if (images && images[imgIndex]) {
+        const img = document.createElement('img');
+        img.src = images[imgIndex];
+        img.alt = `Diagram ${imgIndex + 1}`;
+        img.className = 'problem-inline-image';
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '300px';
+        img.style.display = 'block';
+        img.style.margin = '0.5rem 0';
+        img.style.borderRadius = '4px';
+        img.style.border = '1px solid #e0e0e0';
+        container.appendChild(img);
+      } else {
+        // Fallback: show placeholder text if image not found
+        container.appendChild(document.createTextNode(`[Image ${imgIndex + 1}]`));
+      }
+
+      lastIdx = imgPattern.lastIndex;
+    }
+
+    // Add remaining text after last placeholder
+    if (lastIdx < line.length) {
+      container.appendChild(document.createTextNode(line.slice(lastIdx)));
+    }
+
+    // Add line break if not last line
+    if (lineIdx < arr.length - 1) {
       container.appendChild(document.createElement('br'));
     }
   });
 }
 
-export function LatexRenderer({ latex, className }: LatexRendererProps) {
+export function LatexRenderer({ latex, className, images }: LatexRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Early return for empty/null content - must be before useEffect to prevent
@@ -70,10 +111,10 @@ export function LatexRenderer({ latex, className }: LatexRendererProps) {
     let match;
 
     while ((match = mathPattern.exec(normalized)) !== null) {
-      // Add text before the math
+      // Add text before the math (may contain image placeholders)
       if (match.index > lastIndex) {
         const textBefore = normalized.slice(lastIndex, match.index);
-        appendTextWithLineBreaks(container, textBefore);
+        appendTextWithLineBreaks(container, textBefore, images);
       }
 
       // Render the math
@@ -91,11 +132,11 @@ export function LatexRenderer({ latex, className }: LatexRendererProps) {
       lastIndex = mathPattern.lastIndex;
     }
 
-    // Add remaining text after last math block
+    // Add remaining text after last math block (may contain image placeholders)
     if (lastIndex < normalized.length) {
-      appendTextWithLineBreaks(container, normalized.slice(lastIndex));
+      appendTextWithLineBreaks(container, normalized.slice(lastIndex), images);
     }
-  }, [latex, hasContent]);
+  }, [latex, hasContent, images]);
 
   // Don't render empty container - prevents layout issues with empty divs
   if (!hasContent) {

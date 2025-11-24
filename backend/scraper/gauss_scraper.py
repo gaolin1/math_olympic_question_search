@@ -358,8 +358,11 @@ class GaussScraper:
 
         Returns:
             Dict mapping problem_number to (statement, choices, images) tuple.
-            Images are base64 data URIs.
+            Images are base64 data URIs. The statement contains {{IMG:n}} placeholders
+            at the original image positions, where n is the index into the images list.
         """
+        from copy import copy
+
         problems: dict[int, tuple[str, list[str], list[str]]] = {}
         ol_lists = content.find_all("ol", attrs={"type": "1"})
         problem_number = 1
@@ -371,21 +374,43 @@ class GaussScraper:
         for ol in ol_lists:
             items = ol.find_all("li", recursive=False)
             for item in items:
-                # Collect images from this problem section
+                # Collect images and replace with placeholders to preserve positions
                 images: list[str] = []
-                for img_tag in item.find_all("img"):
-                    img_data = self._extract_image_as_base64(img_tag, base_url)
-                    if img_data:
-                        images.append(img_data)
 
-                # Prefer only the direct paragraph text for the statement to avoid pulling choices
+                # Find images in statement paragraphs (not in nested choice lists)
+                nested_ols = item.find_all("ol")
+                choice_ol = nested_ols[-1] if nested_ols else None
+
+                # Process images in the statement area (direct paragraphs)
                 direct_paras = item.find_all("p", recursive=False)
                 if direct_paras:
+                    for para in direct_paras:
+                        for img_tag in para.find_all("img"):
+                            img_data = self._extract_image_as_base64(img_tag, base_url)
+                            if img_data:
+                                placeholder = f"{{{{IMG:{len(images)}}}}}"
+                                images.append(img_data)
+                                img_tag.replace_with(placeholder)
+                            else:
+                                # Remove images we couldn't extract
+                                img_tag.decompose()
                     statement_raw = " ".join(self._clean_text(p.get_text(" ", strip=True)) for p in direct_paras)
                 else:
+                    # No direct paragraphs - process images at item level (excluding choice list)
+                    # Make a copy to avoid modifying during iteration
+                    for img_tag in list(item.find_all("img")):
+                        # Skip images inside the choices list
+                        if choice_ol and img_tag.find_parent("ol") == choice_ol:
+                            continue
+                        img_data = self._extract_image_as_base64(img_tag, base_url)
+                        if img_data:
+                            placeholder = f"{{{{IMG:{len(images)}}}}}"
+                            images.append(img_data)
+                            img_tag.replace_with(placeholder)
+                        else:
+                            img_tag.decompose()
                     statement_raw = self._clean_text(item.get_text(" ", strip=True))
 
-                nested_ols = item.find_all("ol")
                 choice_tags = []
                 if nested_ols:
                     # Prefer the last nested list (skips earlier descriptive lists)

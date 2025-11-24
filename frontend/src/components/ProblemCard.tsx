@@ -43,28 +43,8 @@ export function ProblemCard({ problem }: ProblemCardProps) {
             <span className="problem-badge">#{problem.problem_number}</span>
           </div>
           <div className="problem-statement" style={{ marginTop: '0.5rem' }}>
-            <LatexRenderer latex={problem.statement} />
+            <LatexRenderer latex={problem.statement} images={problem.images} />
           </div>
-          {problem.images && problem.images.length > 0 && (
-            <div className="problem-images" style={{ marginTop: '0.75rem' }}>
-              {problem.images.map((imgSrc, idx) => (
-                <img
-                  key={idx}
-                  src={imgSrc}
-                  alt={`Problem ${problem.problem_number} diagram ${idx + 1}`}
-                  className="problem-image"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '300px',
-                    display: 'block',
-                    margin: '0.5rem 0',
-                    borderRadius: '4px',
-                    border: '1px solid #e0e0e0'
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </div>
         <span className="problem-expand-icon">{isExpanded ? '−' : '+'}</span>
       </div>
